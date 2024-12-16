@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outgoing Request</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Outgoing Request Form</h1>
+  <form id="request-form">
+    <label>
+      Activity Name:
+      <input type="text" id="activity-name" required />
+    </label>
+    <label>
+      Description:
+      <textarea id="description" required></textarea>
+    </label>
+    <button type="submit">Submit Request</button>
+  </form>
+
+  <div id="response"></div>
+
+  <script>
+    document.getElementById("request-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const activityName = document.getElementById("activity-name").value;
+      const description = document.getElementById("description").value;
+
+      // Send data to main process
+      window.api.sendRequest("submit-request", { activityName, description });
+
+      // Handle response
+      window.api.onResponse("request-status", (response) => {
+        const responseDiv = document.getElementById("response");
+        responseDiv.innerHTML = `<p>${response.message}</p>`;
+      });
+    });
+  </script>
+</body>
+</html>
