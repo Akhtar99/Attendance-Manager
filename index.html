@@ -1,57 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Outgoing Request</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    button {
-      padding: 10px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <h1>Outgoing Request Form</h1>
-  <form id="request-form">
-    <label>
-      Activity Name:
-      <input type="text" id="activity-name" required />
-    </label>
-    <label>
-      Description:
-      <textarea id="description" required></textarea>
-    </label>
-    <button type="submit">Submit Request</button>
-  </form>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Form</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-  <div id="response"></div>
+      h1 {
+        text-align: center;
+        color: #333;
+      }
 
-  <script>
-    document.getElementById("request-form").addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const activityName = document.getElementById("activity-name").value;
-      const description = document.getElementById("description").value;
+      form {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+      }
 
-      // Send data to main process
-      window.api.sendRequest("submit-request", { activityName, description });
+      label {
+        font-size: 14px;
+        color: #555;
+        display: block;
+        margin-bottom: 6px;
+      }
 
-      // Handle response
-      window.api.onResponse("request-status", (response) => {
-        const responseDiv = document.getElementById("response");
-        responseDiv.innerHTML = `<p>${response.message}</p>`;
-      });
-    });
-  </script>
-</body>
+      input[type="email"],
+      input[type="password"] {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      /* Mobile responsiveness */
+      @media (max-width: 600px) {
+        form {
+          padding: 20px;
+        }
+
+        button {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Login</h1>
+    <form id="loginForm">
+      <label>Email:</label>
+      <input type="email" id="email" required /><br /><br />
+      <label>Password:</label>
+      <input type="password" id="password" required /><br /><br />
+      <button type="submit">Login</button>
+    </form>
+
+    <script src="./renderer.js"></script>
+  </body>
 </html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request to Go Outside</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 14px;
+            color: #555;
+        }
+        input[type="text"], input[type="datetime-local"], textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Request Permission to Go Outside</h2>
+        <form id="requestForm">
+            <div class="form-group">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" required placeholder="Enter your name">
+            </div>
+
+            <div class="form-group">
+                <label for="reason">Reason for Going Outside</label>
+                <textarea id="reason" name="reason" required placeholder="Describe your reason"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="time">Requested Time</label>
+                <input type="datetime-local" id="time" name="time" required>
+            </div>
+
+            <button type="submit">Send Request</button>
+        </form>
+
+        <div class="message" id="responseMessage"></div>
+    </div>
+
+    <!-- Include Socket.IO Client -->
+    <script src="http://localhost:4000/socket.io/socket.io.js"></script>
+    <script>
+        const form = document.getElementById('requestForm');
+        const responseMessage = document.getElementById('responseMessage');
+
+        // Initialize socket connection
+        const socket = io('http://localhost:4000');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const name = formData.get('name');
+            const reason = formData.get('reason');
+            const time = formData.get('time');
+
+            // Emit event with form data to the main process
+            socket.emit('out-going-request', { name, reason, time });
+
+            // Show loading message
+            responseMessage.textContent = 'Sending your request...';
+
+            // Listen for the response from the main process
+            socket.on('out-going-response', function(data) {
+                responseMessage.textContent = `Thank you, ${name}. Your request to go outside for "${reason}" at ${new Date(time).toLocaleString()} has been submitted.`;
+            });
+
+            // Optionally, reset the form
+            form.reset();
+        });
+    </script>
+
+</body>
+</html>
